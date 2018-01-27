@@ -14,7 +14,7 @@ namespace FaceSender
     public static class SaveOrder
     {
         [FunctionName("SaveOrder")]
-        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, [Table("orders", Connection = "TableConnectionString")] ICollector<Order> orders, TraceWriter log)
+        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, [Table("orders", Connection = "StorageConnection")] ICollector<Order> orders, TraceWriter log)
         {
             log.Info("C# HTTP trigger function processed a request.");
 
@@ -30,8 +30,9 @@ namespace FaceSender
             var order = new Order
             {
                 Name = name,
+                FileName = $"{name}.jpg",
                 PartitionKey = name,
-                RowKey = name
+                RowKey = $"{name}.jpg"
             };
             orders.Add(order);
 
@@ -42,5 +43,6 @@ namespace FaceSender
     public class Order : TableEntity
     {
         public string Name { get; set; }
+        public string FileName { get; set; }
     }
 }
